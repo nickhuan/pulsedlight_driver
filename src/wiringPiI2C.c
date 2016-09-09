@@ -222,6 +222,9 @@ int wiringPiI2CSetup (const int devId)
   int model, rev, mem, maker, overVolted ;
 
   piBoardId (&model, &rev, &mem, &maker, &overVolted) ;
+// this line is added for OdroidU3 since its ID cannot be detected by the function piBoardId
+// since it used /dev/i2c-4 which is the same as OdroidXU34 just assgin model to XU34
+  model = PI_MODEL_ODROIDXU_34;
 
   if      ( model == PI_MODEL_ODROIDC || model == PI_MODEL_ODROIDC2 )
     device = "/dev/i2c-1" ;
