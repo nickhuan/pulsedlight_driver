@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     // Read distance in cm from LidarLite
     int lidar_read(int fd) {
            int hiVal, loVal, i=0;
-           
+
            // send "measure" command
            hiVal = wiringPiI2CWriteReg8(fd, MEASURE_REG, MEASURE_VAL);
            if (_dbg) printf("write res=%d\n", hiVal);
@@ -59,6 +59,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            // read first byte 
            hiVal = _read_byte(fd, DISTANCE_REG_HI) ;             
            if (_dbg) printf ("Hi=%d ", hiVal);
+
+           // read two bytes together
+           int val = 0;
+           val = wiringPiI2CReadReg16(fd, DISTANCE_REG) ;
+           printf(" Dist=%d\n", val);
            
            return ( (hiVal << 8) + loVal);
     }
