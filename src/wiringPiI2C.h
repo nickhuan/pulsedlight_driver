@@ -21,6 +21,7 @@
  *    If not, see <http://www.gnu.org/licenses/>.
  ***********************************************************************
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -61,6 +62,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+int wiringPiFailure (int fatal, const char *message, ...);
 
 extern int wiringPiI2CRead           (int fd) ;
 extern int wiringPiI2CReadReg8       (int fd, int reg) ;

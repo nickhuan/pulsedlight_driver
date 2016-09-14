@@ -44,6 +44,7 @@
  *	as well as other online resources.
  *********************************************************************************
  */
+
 #include "wiringPiI2C.h"
 
 // Structures used in the ioctl() calls
@@ -77,6 +78,7 @@ static inline int i2c_smbus_access (int fd, char rw, uint8_t command, int size, 
 /*
  * from wiringPi
 */
+
 int wiringPiFailure (int fatal, const char *message, ...)
 {
   va_list argp ;
