@@ -44,42 +44,7 @@
  *	as well as other online resources.
  *********************************************************************************
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <errno.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-
-#include "wiringPi.h"
 #include "wiringPiI2C.h"
-
-// I2C definitions
-
-#define I2C_SLAVE	0x0703
-#define I2C_SMBUS	0x0720	/* SMBus-level access */
-
-#define I2C_SMBUS_READ	1
-#define I2C_SMBUS_WRITE	0
-
-// SMBus transaction types
-
-#define I2C_SMBUS_QUICK		    0
-#define I2C_SMBUS_BYTE		    1
-#define I2C_SMBUS_BYTE_DATA	    2 
-#define I2C_SMBUS_WORD_DATA	    3
-#define I2C_SMBUS_PROC_CALL	    4
-#define I2C_SMBUS_BLOCK_DATA	    5
-#define I2C_SMBUS_I2C_BLOCK_BROKEN  6
-#define I2C_SMBUS_BLOCK_PROC_CALL   7		/* SMBus 2.0 */
-#define I2C_SMBUS_I2C_BLOCK_DATA    8
-
-// SMBus messages
-
-#define I2C_SMBUS_BLOCK_MAX	32	/* As specified in SMBus standard */	
-#define I2C_SMBUS_I2C_BLOCK_MAX	32	/* Not specified but we use same structure */
 
 // Structures used in the ioctl() calls
 
@@ -109,6 +74,27 @@ static inline int i2c_smbus_access (int fd, char rw, uint8_t command, int size, 
   return ioctl (fd, I2C_SMBUS, &args) ;
 }
 
+/*
+ * from wiringPi
+*/
+int wiringPiFailure (int fatal, const char *message, ...)
+{
+  va_list argp ;
+  char buffer [1024] ;
+  int wiringPiReturnCodes = 0;
+
+  if (!fatal && wiringPiReturnCodes)
+    return -1 ;
+
+  va_start (argp, message) ;
+    vsnprintf (buffer, 1023, message, argp) ;
+  va_end (argp) ;
+
+  fprintf (stderr, "%s", buffer) ;
+  exit (EXIT_FAILURE) ;
+
+  return 0 ;
+}
 
 /*
  * wiringPiI2CRead:
@@ -219,25 +205,6 @@ int wiringPiI2CSetupInterface (const char *device, int devId)
 int wiringPiI2CSetup (const int devId)
 {
   const char *device ;
-  int model, rev, mem, maker, overVolted ;
-
-  piBoardId (&model, &rev, &mem, &maker, &overVolted) ;
-// this line is added for OdroidU3 since its ID cannot be detected by the function piBoardId
-// since it used /dev/i2c-4 which is the same as OdroidXU34 just assgin model to XU34
-  model = PI_MODEL_ODROIDXU_34;
-
-  if      ( model == PI_MODEL_ODROIDC || model == PI_MODEL_ODROIDC2 )
-    device = "/dev/i2c-1" ;
-  else if ( model == PI_MODEL_ODROIDXU_34 )
-    device = "/dev/i2c-4" ;	/* update 2016/feb/12 Linux */
-  else  {
-    rev = piBoardRev () ;
-
-    if (rev == 1)
-      device = "/dev/i2c-0" ;
-    else
-      device = "/dev/i2c-1" ;
-  }
-
+  device = "/dev/i2c-4"; // device path for Odroid U3+
   return wiringPiI2CSetupInterface (device, devId) ;
 }

@@ -26,9 +26,20 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-    #include "lidarLite.h"
+#include "lidarLite.h"
     
-    bool _dbg;
+bool _dbg;
+
+//delay
+void delay (unsigned int howLong)
+{
+  struct timespec sleeper, dummy ;
+
+  sleeper.tv_sec  = (time_t)(howLong / 1000) ;
+  sleeper.tv_nsec = (long)(howLong % 1000) * 1000000 ;
+
+  nanosleep (&sleeper, &dummy) ;
+}
    
     // Initialize wiring I2C interface to LidarLite
     int lidar_init(bool dbg) {
@@ -50,22 +61,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            // send "measure" command
            hiVal = wiringPiI2CWriteReg8(fd, MEASURE_REG, MEASURE_VAL);
            if (_dbg) printf("write res=%d\n", hiVal);
-           delay(20);
+           delay(100);
        
            // Read second byte and append with first 
            loVal = _read_byteNZ(fd, DISTANCE_REG_LO) ;        
-           if (_dbg) printf(" Lo=%d\n", loVal);
+           if (_dbg) printf(" Lo=%x ", loVal);
            
            // read first byte 
            hiVal = _read_byte(fd, DISTANCE_REG_HI) ;             
-           if (_dbg) printf ("Hi=%d ", hiVal);
+           if (_dbg) printf ("Hi=%x \n", hiVal);
 
            // read two bytes together
            int val = 0;
            val = wiringPiI2CReadReg16(fd, DISTANCE_REG) ;
-           printf(" Dist=%d\n", val);
+           printf(" Dist_2bytes=%04x\n", val);
            
-           return ( (hiVal << 8) + loVal);
+           return ( (hiVal << 8) + loVal - OFFSET);
     }
     
    unsigned char lidar_version(int fd) {
@@ -77,24 +88,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             
     void lidar_status_print(unsigned char status) {
-    if (status != 0) 
-        printf("STATUS BYTE: 0x%x ", (unsigned int) status);
+        if (status != 0) 
+            printf("STATUS BYTE: 0x%x ", (unsigned int) status);
 
-if (status & STAT_BUSY) printf("busy \n");              
-if (status & STAT_REF_OVER) printf("reference overflow \n");            
-if (status & STAT_SIG_OVER) printf("signal overflow \n");            
-if (status & STAT_PIN) printf("mode select pin \n");                 
-if (status & STAT_SECOND_PEAK) printf("second peak \n");         
-if (status & STAT_TIME) printf("active between pairs \n");                
-if (status & STAT_INVALID) printf("no signal \n");             
-if (status & STAT_EYE) printf(" eye safety \n");                 
-    }    
+        if (status & STAT_BUSY) printf("busy \n");              
+        if (status & STAT_REF_OVER) printf("reference overflow \n");            
+        if (status & STAT_SIG_OVER) printf("signal overflow \n");            
+        if (status & STAT_PIN) printf("mode select pin \n");                 
+        if (status & STAT_SECOND_PEAK) printf("second peak \n");         
+        if (status & STAT_TIME) printf("active between pairs \n");                
+        if (status & STAT_INVALID) printf("no signal \n");             
+        if (status & STAT_EYE) printf(" eye safety \n");                 
+        }    
     
     // Read a byte from I2C register.  Repeat if not ready
-unsigned char  _read_byte(int fd, int reg)
- {
- return _read_byte_raw(fd, reg, true);
- }
+    unsigned char  _read_byte(int fd, int reg){
+         return _read_byte_raw(fd, reg, true);
+    }  
     
         // Read Lo byte from I2C register.  Repeat if not ready or zero
 unsigned char  _read_byteNZ(int fd, int reg) {

@@ -25,8 +25,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
 #include <stdio.h>
-#include <wiringPiI2C.h>
 #include <stdbool.h>
+#include <time.h>
+
+#include "wiringPiI2C.h"
 
 #define LIDAR_LITE_ADRS 0x62
 
@@ -49,6 +51,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 #define STAT_TIME               0x20
 #define STAT_INVALID            0x40
 #define STAT_EYE                0x80
+
+#define OFFSET 6
 
 int lidar_init(bool);
 int lidar_read(int);
