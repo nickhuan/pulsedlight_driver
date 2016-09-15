@@ -1,6 +1,13 @@
+#include <ros/ros.h>
+#include <sensor_msgs/Range.h>
+
 #include "lidarLite.h"
 
-int main(int argc,char *argv[]){
+int main(int argc,char **argv){
+	ros::init(argc, argv, "lidar");
+	ros::NodeHandle n;
+	ros::Publisher lidar_pub = n.advertise<sensor_msgs::Range>("range", 1000);
+
     int fd, res, i, del;
     unsigned char st, ver;
 
@@ -15,7 +22,7 @@ int main(int argc,char *argv[]){
         printf("initialization error\n");
     }
     else {
-        for (i=0;i<40;i++) {
+        while(ros::ok()){
             res = lidar_read(fd);
             st = lidar_status(fd);
             //ver = lidar_version(fd);

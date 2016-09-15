@@ -1,11 +1,26 @@
 cmake_minimum_required (VERSION 2.6)
-project (lidarTest)
-include_directories(src)
-add_executable(lidarTest 
-		src/main.c 
-		src/lidarLite.c 
-		src/lidarLite.h
-		src/wiringPiI2C.c
-		src/wiringPiI2C.h
+project(lidar)
+
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
 )
-target_link_libraries (lidarTest pthread)
+
+catkin_package()
+
+include_directories(
+	${catkin_INCLUDE_DIRS}
+	include)
+	
+add_executable(lidar
+	src/main.cpp 
+	src/lidarLite.c 
+	include/lidarLite.h
+	src/wiringPiI2C.c
+	include/wiringPiI2C.h
+) 
+
+target_link_libraries (lidar
+${catkin_LIBRARIES}
+#pthread
+)

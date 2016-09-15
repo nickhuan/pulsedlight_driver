@@ -52,12 +52,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 #define STAT_INVALID            0x40
 #define STAT_EYE                0x80
 
-#define OFFSET 6
+#define OFFSET 0
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void delay (unsigned int howLong);
 int lidar_init(bool);
 int lidar_read(int);
+unsigned char lidar_version(int fd);
+unsigned char lidar_status(int fd);
+void lidar_status_print(unsigned char status);
+
 unsigned char  _read_byte(int, int);
 unsigned char  _read_byteNZ(int, int);
 unsigned char  _read_byte_raw(int, int, bool);
 unsigned char lidar_version(int) ;
 unsigned char lidar_status(int);
+
+#ifdef __cplusplus
+}
+#endif

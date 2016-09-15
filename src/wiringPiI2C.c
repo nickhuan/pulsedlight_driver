@@ -200,7 +200,7 @@ int wiringPiI2CSetupInterface (const char *device, int devId)
 
 /*
  * wiringPiI2CSetup:
- *	Open the I2C device, and regsiter the target device
+ *	Open the I2C device, and register the target device
  *********************************************************************************
  */
 
