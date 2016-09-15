@@ -6,10 +6,13 @@
 int main(int argc,char **argv){
 	ros::init(argc, argv, "lidar");
 	ros::NodeHandle n;
-	ros::Publisher lidar_pub = n.advertise<sensor_msgs::Range>("range", 1000);
+	ros::Publisher lidar_pub = n.advertise<sensor_msgs::Range>("/lidar/range", 10);
 
     int fd, res, i, del;
     unsigned char st, ver;
+    sensor_msgs::Range msg;
+    msg.max_range = 40; //in meter
+    msg.min_range = 0;
 
     // First arg is delay in ms (default is 1000)
     if (argc > 1) 
@@ -30,6 +33,11 @@ int main(int argc,char **argv){
             printf("%3.0d cm \n", res);
             lidar_status_print(st);
             
+            //TODO: fill up the message for rostopic /lidar/range
+            msg.header.stamp = ros::Time::now();
+            msg.range = res/100; //convert centimeter into meter
+            lidar_pub.publish(msg);
+
             delay(del);
         }
     }
