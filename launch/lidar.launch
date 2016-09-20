@@ -1,0 +1,6 @@
+<launch>
+    <node name="lidar" pkg="lidar" type="lidar" output="screen" clear_params="true">     
+    <remap from="lidar/range" to="pose_sensor/lidar_state_input" />
+
+    </node>
+</launch>
