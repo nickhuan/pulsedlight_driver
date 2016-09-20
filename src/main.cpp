@@ -35,7 +35,7 @@ int main(int argc,char **argv){
             
             //TODO: fill up the message for rostopic /lidar/range
             msg.header.stamp = ros::Time::now();
-            msg.range = res/100; //convert centimeter into meter
+            msg.range = res/100.0; //convert centimeter into meter
             lidar_pub.publish(msg);
 
             delay(del);
