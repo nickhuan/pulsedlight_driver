@@ -60,14 +60,14 @@ int lidar_read(int fd) {
 	// send "measure" command
 	hiVal = wiringPiI2CWriteReg8(fd, MEASURE_REG, MEASURE_VAL);
 	if (_dbg) printf("write res=%d\n", hiVal);
-	delay(100);
+	delay(30);
 
 	// Read second byte and append with first
 	loVal = _read_byteNZ(fd, DISTANCE_REG_LO) ;
 	if (_dbg) printf(" Lo=%x ", loVal);
 
 	// read first byte
-	hiVal = _read_byte(fd, DISTANCE_REG_HI) ;
+	hiVal = _read_byte(fd, DISTANCE_REG_HI); 
 	if (_dbg) printf ("Hi=%x \n", hiVal);
 
 	// read two bytes together
@@ -87,7 +87,7 @@ unsigned char lidar_status(int fd) {
 }
 
 void lidar_status_print(unsigned char status) {
-	if (status != 0)
+/*	if (status != 0)
 		printf("STATUS BYTE: 0x%x ", (unsigned int) status);
 
 	if (status & STAT_BUSY) printf("busy \n");
@@ -98,6 +98,7 @@ void lidar_status_print(unsigned char status) {
 	if (status & STAT_TIME) printf("active between pairs \n");
 	if (status & STAT_INVALID) printf("no signal \n");
 	if (status & STAT_EYE) printf(" eye safety \n");
+*/
 }
 
 // Read a byte from I2C register.  Repeat if not ready

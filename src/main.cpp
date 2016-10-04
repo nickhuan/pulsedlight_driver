@@ -17,9 +17,9 @@ int main(int argc,char **argv){
     // First arg is delay in ms (default is 1000)
     if (argc > 1) 
        del = atoi(argv[1]);
-    else del=1000;
+    else del=5;
     
-    fd = lidar_init(true);
+    fd = lidar_init(false);
    
     if (fd == -1) {
         printf("initialization error\n");
